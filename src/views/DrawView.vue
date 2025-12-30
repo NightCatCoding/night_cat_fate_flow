@@ -5,6 +5,7 @@ import {useDraw, useMascotState} from '@/composables'
 import {NAmbientBg, NButton, NCard, NFateButton, NInput} from '@/components/ui'
 import {SlotMachine} from '@/components/wheel'
 import {DrawHistory} from '@/components/history'
+import {ParticipantPool} from '@/components/draw'
 import {MascotReaction} from '@/components/mascot'
 import {ArrowLeft, Minus, Plus, RotateCcw, Settings2, Trophy, Users} from 'lucide-vue-next'
 import type {ThemeColor} from '@/types'
@@ -122,7 +123,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="min-h-screen pt-1 md:pt-20 px-1 sm:px-6 pb-28 md:pb-8 animate-fade-in bg-night-deep">
+  <div class="min-h-screen pt-1 md:pt-20 px-1 sm:px-6 pb-60 md:pb-8 animate-fade-in bg-night-deep">
     <!-- 动态背景光晕 - 根据主题色变化 -->
     <div
         class="fixed inset-0 pointer-events-none transition-all duration-700"
@@ -149,19 +150,10 @@ const goBack = () => {
       <!-- MOBILE LAYOUT - 沉浸式全屏抽奖体验 -->
       <!-- ========================================== -->
       <div class="lg:hidden flex flex-col">
-        <!-- 顶部: 吉祥物 + 标题 + 统计 -->
+        <!-- 顶部: 标题 + 统计（精简版） -->
         <header class="text-center mb-2">
-          <!-- 手机版吉祥物 - 显示 pray.png -->
-          <div class="flex justify-center mb-2">
-            <MascotReaction
-                :state="mascotState"
-                size="md"
-                :show-bubble="false"
-            />
-          </div>
-
           <h1 :class="[
-            'text-2xl sm:text-3xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mb-2',
+            'text-2xl sm:text-3xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mb-1',
             currentTheme.gradient
           ]">
             {{ currentCategory?.name || '命运转盘' }}
@@ -176,17 +168,52 @@ const goBack = () => {
           </div>
         </header>
 
+        <!-- 分组快速切换 - 移到顶部标题下方 -->
+        <div
+            v-if="gameStore.categories.length > 1"
+            class="flex flex-wrap gap-1.5 justify-center px-2 py-2 mb-2"
+        >
+          <button
+              v-for="category in gameStore.categories"
+              :key="category.id"
+              :class="[
+              'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200',
+              gameStore.currentCategoryId === category.id
+                ? [
+                    themeColorStyles[category.themeColor].bg,
+                    themeColorStyles[category.themeColor].text,
+                    themeColorStyles[category.themeColor].border,
+                    'border',
+                    themeColorStyles[category.themeColor].glow
+                  ]
+                : 'bg-night-surface/30 text-txt-muted/70 border border-transparent hover:bg-night-surface/50'
+            ]"
+              @click="selectCategory(category.id)"
+          >
+            {{ category.name }}
+          </button>
+        </div>
+
+        <!-- 手机版待抽名单 -->
+        <div class="px-2 mb-3">
+          <ParticipantPool
+              :items="currentCategory?.items || []"
+              :theme-color="currentThemeColor"
+              :is-spinning="uiStore.isSpinning"
+              variant="mobile"
+          />
+        </div>
+
         <!-- 核心焦点: 水车式滚动 -->
-        <div class="flex justify-center my-3">
+        <div class="flex justify-center my-2">
           <SlotMachine
               :items="availableItems"
               :theme-color="currentThemeColor"
           />
         </div>
 
-        <!-- 控制区域 -->
-        <div class="mt-2 px-2 space-y-2">
-          <!-- 抽取人数 + 重置 -->
+        <!-- 控制区域 - 只保留抽取人数 -->
+        <div class="mt-2 px-2">
           <div
               :class="[
               'flex items-center justify-between backdrop-blur-sm rounded-xl px-3 py-2.5 border transition-all duration-300',
@@ -229,44 +256,6 @@ const goBack = () => {
               重置
             </button>
           </div>
-
-          <!-- 分组快速切换 (使用各自主题色) -->
-          <div
-              v-if="gameStore.categories.length > 1"
-              class="flex flex-wrap gap-1.5 justify-center py-1"
-          >
-            <button
-                v-for="category in gameStore.categories"
-                :key="category.id"
-                :class="[
-                'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200',
-                gameStore.currentCategoryId === category.id
-                  ? [
-                      themeColorStyles[category.themeColor].bg,
-                      themeColorStyles[category.themeColor].text,
-                      themeColorStyles[category.themeColor].border,
-                      'border',
-                      themeColorStyles[category.themeColor].glow
-                    ]
-                  : 'bg-night-surface/30 text-txt-muted/70 border border-transparent hover:bg-night-surface/50'
-              ]"
-                @click="selectCategory(category.id)"
-            >
-              {{ category.name }}
-            </button>
-          </div>
-
-          <!-- 已中奖名单 -->
-          <div v-if="wonItems.length > 0" class="flex flex-wrap gap-1 justify-center max-h-[8vh] overflow-y-auto py-1">
-            <span
-                v-for="item in wonItems"
-                :key="item.id"
-                class="px-2 py-0.5 rounded-full text-[10px] font-mono
-                   bg-night-elevated/20 text-txt-muted/40 line-through"
-            >
-              {{ item.name }}
-            </span>
-          </div>
         </div>
       </div>
 
@@ -274,7 +263,7 @@ const goBack = () => {
       <!-- DESKTOP LAYOUT - 完整三栏布局 -->
       <!-- ========================================== -->
       <div class="hidden lg:grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        <!-- LEFT COLUMN: Config Panel + Mascot -->
+        <!-- LEFT COLUMN: Mascot + 待抽名单 -->
         <div class="lg:col-span-3 space-y-6">
           <div class="flex justify-center">
             <MascotReaction
@@ -284,7 +273,15 @@ const goBack = () => {
             />
           </div>
 
-          <!-- Category Selector (使用各自主题色) -->
+          <!-- 电脑版待抽名单 -->
+          <ParticipantPool
+              :items="currentCategory?.items || []"
+              :theme-color="currentThemeColor"
+              :is-spinning="uiStore.isSpinning"
+              variant="desktop"
+          />
+
+          <!-- Category Selector -->
           <NCard
               v-if="gameStore.categories.length > 1"
               variant="glass"
@@ -325,68 +322,6 @@ const goBack = () => {
               </button>
             </div>
           </NCard>
-
-          <!-- Draw Settings -->
-          <NCard variant="glass" padding="md">
-            <h2 :class="['font-medium text-sm mb-4 flex items-center gap-2', currentTheme.text]">
-              <Settings2 class="w-4 h-4"/>
-              抽奖配置
-            </h2>
-
-            <div class="space-y-5">
-              <div class="text-center">
-                <label class="text-xs font-semibold text-txt-muted uppercase tracking-wider block mb-3">
-                  抽取人数
-                </label>
-                <NInput
-                    v-model="uiStore.drawCount"
-                    type="number"
-                    :min="1"
-                    :max="100"
-                    size="lg"
-                    :mono="true"
-                    class="text-center text-3xl font-bold"
-                    @update:model-value="(v) => uiStore.setDrawCount(Number(v))"
-                />
-              </div>
-
-              <NButton
-                  variant="glass"
-                  size="sm"
-                  full-width
-                  @click="confirmResetWinners"
-              >
-                <RotateCcw class="w-4 h-4"/>
-                重置中奖状态
-              </NButton>
-            </div>
-          </NCard>
-
-          <!-- Stats (使用动态主题色) -->
-          <NCard variant="glow" padding="md" :class="currentTheme.glow">
-            <div class="grid grid-cols-2 gap-4 text-center">
-              <div>
-                <div :class="['text-4xl font-mono font-bold', currentTheme.text]">
-                  {{ availableItems.length }}
-                </div>
-                <div
-                    class="text-xs text-txt-muted uppercase tracking-wider flex items-center justify-center gap-1 mt-1">
-                  <Users class="w-3 h-3"/>
-                  剩余
-                </div>
-              </div>
-              <div>
-                <div class="text-4xl font-mono font-bold text-accent-warm">
-                  {{ wonItems.length }}
-                </div>
-                <div
-                    class="text-xs text-txt-muted uppercase tracking-wider flex items-center justify-center gap-1 mt-1">
-                  <Trophy class="w-3 h-3"/>
-                  已中奖
-                </div>
-              </div>
-            </div>
-          </NCard>
         </div>
 
         <!-- CENTER COLUMN: The Slot Machine -->
@@ -416,42 +351,84 @@ const goBack = () => {
             />
           </div>
 
-          <!-- Available items grid (使用动态主题色) -->
-          <div class="mt-8 w-full max-w-xl">
-            <div class="flex flex-wrap gap-2 justify-center">
-              <span
-                  v-for="item in currentCategory?.items || []"
-                  :key="item.id"
-                  :class="[
-                  'px-3 py-1.5 rounded-full text-xs font-mono font-medium transition-all',
-                  item.hasWon
-                    ? 'bg-night-surface/30 text-txt-muted line-through'
-                    : [currentTheme.bg, currentTheme.text, currentTheme.border, 'border']
-                ]"
-              >
-                {{ item.name }}
-              </span>
-            </div>
+          <!-- 抽奖配置 - 移到中间区域下方 -->
+          <div class="mt-8 w-full max-w-md">
+            <NCard variant="glass" padding="md">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <span :class="['text-sm font-medium', currentTheme.text]">抽取人数</span>
+                  <NInput
+                    v-model="uiStore.drawCount"
+                    type="number"
+                    :min="1"
+                    :max="100"
+                    size="md"
+                    :mono="true"
+                    class="w-20 text-center"
+                    @update:model-value="(v) => uiStore.setDrawCount(Number(v))"
+                  />
+                </div>
+
+                <NButton
+                    variant="ghost"
+                  size="sm"
+                  @click="confirmResetWinners"
+                >
+                  <RotateCcw class="w-4 h-4"/>
+                  重置状态
+                </NButton>
+              </div>
+
+              <!-- 统计 -->
+              <div class="flex items-center justify-center gap-8 mt-4 pt-4 border-t border-glass-border">
+                <div class="text-center">
+                  <div :class="['text-2xl font-mono font-bold', currentTheme.text]">
+                    {{ availableItems.length }}
+                  </div>
+                  <div class="text-xs text-txt-muted flex items-center gap-1">
+                    <Users class="w-3 h-3"/>
+                    待抽
+                  </div>
+                </div>
+                <div class="w-px h-10 bg-glass-border"/>
+                <div class="text-center">
+                  <div class="text-2xl font-mono font-bold text-accent-warm">
+                    {{ wonItems.length }}
+                  </div>
+                  <div class="text-xs text-txt-muted flex items-center gap-1">
+                    <Trophy class="w-3 h-3"/>
+                    已中奖
+                  </div>
+                </div>
+              </div>
+            </NCard>
           </div>
         </div>
 
         <!-- RIGHT COLUMN: History -->
-        <div class="lg:col-span-3 h-auto lg:max-h-[70vh]">
+        <div class="lg:col-span-3 h-auto lg:max-h-[80vh]">
           <DrawHistory/>
         </div>
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- MOBILE STICKY BOTTOM SPIN BUTTON - 更大尺寸 -->
+    <!-- MOBILE STICKY BOTTOM SPIN BUTTON -->
     <!-- ========================================== -->
-    <div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden pb-2">
-      <NFateButton
+    <div class="fixed bottom-0 left-0 right-0 z-30 lg:hidden">
+      <!-- 渐变遮罩背景 -->
+      <div
+          class="absolute inset-0 bg-gradient-to-t from-night-deep via-night-deep/95 to-transparent pointer-events-none"/>
+
+      <!-- 按钮容器 -->
+      <div class="relative flex justify-center pb-6 pt-4">
+        <NFateButton
           size="xl"
           :disabled="availableItems.length === 0"
           :loading="uiStore.isSpinning"
           @activate="startDraw"
-      />
+        />
+      </div>
     </div>
   </div>
 </template>
