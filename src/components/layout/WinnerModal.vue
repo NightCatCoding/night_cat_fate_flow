@@ -10,10 +10,10 @@ defineOptions({name: 'WinnerModal'})
 const uiStore = useUiStore()
 const {fireStars} = useConfetti()
 
-// 彈窗開啟時補充星星效果（主要彩花已在 useDraw 觸發）
+// 弹窗开启时补充星星效果（主要彩花已在 useDraw 触发）
 watch(() => uiStore.showWinnerModal, (show) => {
   if (show && uiStore.recentWinners.length > 0) {
-    // 延遲發射星星，與主彩花錯開
+    // 延迟发射星星，与主彩花错开
     setTimeout(() => {
       fireStars('gold')
     }, 800)
@@ -31,14 +31,14 @@ watch(() => uiStore.showWinnerModal, (show) => {
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
     >
-      <!-- 背景遮罩層 - z-[90]，讓彩花(z-95)可以顯示在上面 -->
+      <!-- 背景遮罩层 - z-[90]，让彩花(z-95)可以显示在上面 -->
       <div
           v-if="uiStore.showWinnerModal"
           class="fixed inset-0 z-[90] bg-night-void/80 backdrop-blur-xl"
       />
     </Transition>
 
-    <!-- Modal 內容層 - z-[100]，在彩花之上 -->
+    <!-- Modal 内容层 - z-[100]，在彩花之上 -->
     <Transition
         enter-active-class="transition-all duration-500 ease-out delay-100"
         enter-from-class="opacity-0 scale-90"
@@ -78,14 +78,14 @@ watch(() => uiStore.showWinnerModal, (show) => {
             <PartyPopper
                 class="inline-block w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 mr-2 md:mr-3 -mt-1 md:-mt-2 text-accent-warm"
             />
-            天選之人
+            天选之人
             <PartyPopper
                 class="inline-block w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 ml-2 md:ml-3 -mt-1 md:-mt-2 text-accent-warm"
                 style="transform: scaleX(-1)"
             />
           </h2>
 
-          <!-- Winners - 手機版更大更醒目 -->
+          <!-- Winners - 手机版更大更醒目 -->
           <div class="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 lg:gap-10
                       mb-8 sm:mb-10 md:mb-14 lg:mb-16
                       min-h-[80px] sm:min-h-[100px]">
@@ -115,7 +115,7 @@ watch(() => uiStore.showWinnerModal, (show) => {
               @click="uiStore.closeWinnerModal"
           >
             <Sparkles class="w-5 h-5"/>
-            繼續抽獎
+            继续抽奖
           </NButton>
         </div>
       </div>

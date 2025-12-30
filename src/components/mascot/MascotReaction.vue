@@ -119,10 +119,14 @@ onUnmounted(() => {
   }
 })
 
+// 尺寸配置 - 手机版更大更醒目
 const sizeClasses = computed(() => ({
-  sm: 'w-24 h-24',
-  md: 'w-36 h-36',
-  lg: 'w-48 h-48',
+  // sm: 手机32vw(最大120px), 平板28, 桌面32
+  sm: 'w-[32vw] h-[32vw] max-w-[120px] max-h-[120px] sm:w-28 sm:h-28 sm:max-w-none sm:max-h-none md:w-32 md:h-32',
+  // md: 手机38vw(最大150px), 平板36, 桌面44
+  md: 'w-[38vw] h-[38vw] max-w-[150px] max-h-[150px] sm:w-36 sm:h-36 sm:max-w-none sm:max-h-none md:w-44 md:h-44',
+  // lg: 手机44vw(最大180px), 平板44, 桌面56
+  lg: 'w-[44vw] h-[44vw] max-w-[180px] max-h-[180px] sm:w-44 sm:h-44 sm:max-w-none sm:max-h-none md:w-56 md:h-56',
 }[props.size]))
 
 const bubblePosition = computed(() => ({

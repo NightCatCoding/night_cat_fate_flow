@@ -51,9 +51,15 @@ const remainingPeople = computed(() =>
         <div class="flex justify-center mb-2 md:mb-6">
           <MascotReaction
               :state="mascotState"
-              :size="'md'"
+              size="sm"
               :show-bubble="false"
-              class="scale-50 md:scale-100 origin-center"
+              class="md:hidden"
+          />
+          <MascotReaction
+              :state="mascotState"
+              size="md"
+              :show-bubble="false"
+              class="hidden md:block"
           />
         </div>
 

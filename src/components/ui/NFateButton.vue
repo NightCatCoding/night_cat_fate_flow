@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
-// 導入圖片資源
+// 导入图片资源
 import standbyImg from '@/assets/standby_fate_flow.png'
 import pushImg from '@/assets/push_fate_flow.png'
 
@@ -23,29 +23,31 @@ const emit = defineEmits<{
 }>()
 
 // ============================================
-// 尺寸配置
+// 尺寸配置 - 手机版显著放大
 // ============================================
 const sizeClasses = computed(() => {
   switch (props.size) {
     case 'sm':
-      return 'w-20 h-20 sm:w-24 sm:h-24'
+      return 'w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28'
     case 'md':
-      return 'w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36'
+      return 'w-36 h-36 sm:w-32 sm:h-32 md:w-40 md:h-40'
     case 'xl':
-      return 'w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52'
+      // 手机版非常大: 48vw，最大200px
+      return 'w-[48vw] h-[48vw] max-w-[200px] max-h-[200px] sm:w-52 sm:h-52 sm:max-w-none sm:max-h-none md:w-56 md:h-56'
     case 'lg':
     default:
-      return 'w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56'
+      // 手机版大: 44vw，最大180px
+      return 'w-[44vw] h-[44vw] max-w-[180px] max-h-[180px] sm:w-48 sm:h-48 sm:max-w-none sm:max-h-none md:w-52 md:h-52 lg:w-56 lg:h-56'
   }
 })
 
 // ============================================
-// 交互狀態管理
+// 交互状态管理
 // ============================================
 const isHovering = ref(false)
 const isPressing = ref(false)
 
-// 當前顯示的圖片
+// 当前显示的图片
 const currentImage = computed(() => {
   if (props.loading) return pushImg
   if (isPressing.value) return pushImg
@@ -53,7 +55,7 @@ const currentImage = computed(() => {
   return standbyImg
 })
 
-// 按鈕縮放樣式
+// 按钮缩放样式
 const buttonScale = computed(() => {
   if (props.disabled) return 'scale-100 opacity-50'
   if (props.loading) return 'scale-95 animate-pulse'
@@ -63,7 +65,7 @@ const buttonScale = computed(() => {
 })
 
 // ============================================
-// 滑鼠事件處理
+// 鼠标事件处理
 // ============================================
 const handleMouseEnter = () => {
   if (!props.disabled && !props.loading) {
@@ -85,13 +87,13 @@ const handleMouseDown = () => {
 const handleMouseUp = () => {
   if (isPressing.value && !props.disabled && !props.loading) {
     isPressing.value = false
-    // 放開滑鼠時才觸發
+    // 放开鼠标时才触发
     emit('activate')
   }
 }
 
 // ============================================
-// 觸控事件處理（移動端）
+// 触控事件处理（移动端）
 // ============================================
 const handleTouchStart = () => {
   if (!props.disabled && !props.loading) {
@@ -127,7 +129,7 @@ const handleTouchCancel = () => {
       @touchend.prevent="handleTouchEnd"
       @touchcancel="handleTouchCancel"
   >
-    <!-- 外發光效果 -->
+    <!-- 外发光效果 -->
     <div
         :class="[
         'absolute inset-0 rounded-full blur-2xl transition-all duration-500',
@@ -136,17 +138,17 @@ const handleTouchCancel = () => {
       ]"
     />
 
-    <!-- 按鈕圖片容器 -->
+    <!-- 按钮图片容器 -->
     <div
         :class="[
         'relative transition-all duration-200 ease-out',
         buttonScale
       ]"
     >
-      <!-- 主圖片 -->
+      <!-- 主图片 -->
       <img
           :src="currentImage"
-          alt="開啟命運"
+          alt="开启命运"
           :class="[
           sizeClasses,
           'object-contain drop-shadow-2xl transition-all duration-200',
@@ -160,7 +162,7 @@ const handleTouchCancel = () => {
 
 <style scoped>
 .fate-button {
-  /* 移除默認按鈕樣式 */
+  /* 移除默认按钮样式 */
   background: none;
   border: none;
   padding: 0;
@@ -172,7 +174,7 @@ const handleTouchCancel = () => {
   cursor: not-allowed;
 }
 
-/* 確保圖片不會被拖動 */
+/* 确保图片不会被拖动 */
 .fate-button img {
   pointer-events: none;
   user-select: none;

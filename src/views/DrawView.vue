@@ -149,26 +149,35 @@ const goBack = () => {
       <!-- MOBILE LAYOUT - 沉浸式全屏抽奖体验 -->
       <!-- ========================================== -->
       <div class="lg:hidden flex flex-col">
-        <!-- 顶部: 标题 + 统计 (使用动态主题色) -->
-        <header class="text-center mb-3">
+        <!-- 顶部: 吉祥物 + 标题 + 统计 -->
+        <header class="text-center mb-2">
+          <!-- 手机版吉祥物 - 显示 pray.png -->
+          <div class="flex justify-center mb-2">
+            <MascotReaction
+                :state="mascotState"
+                size="md"
+                :show-bubble="false"
+            />
+          </div>
+
           <h1 :class="[
-            'text-3xl sm:text-4xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mt-3 mb-3',
+            'text-2xl sm:text-3xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mb-2',
             currentTheme.gradient
           ]">
             {{ currentCategory?.name || '命运转盘' }}
           </h1>
-          <div class="flex justify-center gap-8 mt-1">
-            <span :class="['text-base font-mono font-semibold flex items-center gap-1.5', currentTheme.text]">
+          <div class="flex justify-center gap-6">
+            <span :class="['text-sm font-mono font-semibold flex items-center gap-1.5', currentTheme.text]">
               <Users class="w-4 h-4"/>{{ availableItems.length }} 待抽
             </span>
-            <span class="text-base text-accent-warm font-mono font-semibold flex items-center gap-1.5">
+            <span class="text-sm text-accent-warm font-mono font-semibold flex items-center gap-1.5">
               <Trophy class="w-4 h-4"/>{{ wonItems.length }} 已中
             </span>
           </div>
         </header>
 
         <!-- 核心焦点: 水车式滚动 -->
-        <div class="flex justify-center my-4">
+        <div class="flex justify-center my-3">
           <SlotMachine
               :items="availableItems"
               :theme-color="currentThemeColor"
@@ -434,11 +443,11 @@ const goBack = () => {
     </div>
 
     <!-- ========================================== -->
-    <!-- MOBILE STICKY BOTTOM SPIN BUTTON -->
+    <!-- MOBILE STICKY BOTTOM SPIN BUTTON - 更大尺寸 -->
     <!-- ========================================== -->
     <div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden pb-2">
       <NFateButton
-          size="lg"
+          size="xl"
           :disabled="availableItems.length === 0"
           :loading="uiStore.isSpinning"
           @activate="startDraw"
