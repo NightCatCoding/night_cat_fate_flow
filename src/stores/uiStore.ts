@@ -10,6 +10,9 @@ export const useUiStore = defineStore('ui', () => {
     const rotation = ref(0)
     const drawCount = ref(1)
 
+    // 預選的中獎者 ID（在動畫開始時決定，用於讓水車停在正確位置）
+    const pendingWinnerIds = ref<string[]>([])
+
     // ============================================
     // Modal 狀態
     // ============================================
@@ -59,14 +62,19 @@ export const useUiStore = defineStore('ui', () => {
     // ============================================
     // Actions - 轉盤控制
     // ============================================
-    const startSpin = () => {
+    const startSpin = (winnerIds: string[] = []) => {
         if (isSpinning.value) return
+        pendingWinnerIds.value = winnerIds
         isSpinning.value = true
         rotation.value += 1800 + Math.random() * 720 // 5-7 full rotations
     }
 
     const stopSpin = () => {
         isSpinning.value = false
+    }
+
+    const clearPendingWinners = () => {
+        pendingWinnerIds.value = []
     }
 
     const setDrawCount = (count: number) => {
@@ -176,6 +184,7 @@ export const useUiStore = defineStore('ui', () => {
         isSpinning,
         rotation,
         drawCount,
+        pendingWinnerIds,
         showWinnerModal,
         recentWinners,
         showSettingsModal,
@@ -191,6 +200,7 @@ export const useUiStore = defineStore('ui', () => {
         // Actions - Wheel
         startSpin,
         stopSpin,
+        clearPendingWinners,
         setDrawCount,
 
         // Actions - Winner Modal

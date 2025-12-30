@@ -3,7 +3,7 @@ import {computed} from 'vue'
 import {useGameStore, useUiStore} from '@/stores'
 import {useDraw, useMascotState} from '@/composables'
 import {NAmbientBg, NButton, NCard, NFateButton, NInput} from '@/components/ui'
-import {FateWheel} from '@/components/wheel'
+import {SlotMachine} from '@/components/wheel'
 import {DrawHistory} from '@/components/history'
 import {MascotReaction} from '@/components/mascot'
 import {ArrowLeft, Minus, Plus, RotateCcw, Settings2, Trophy, Users} from 'lucide-vue-next'
@@ -14,7 +14,7 @@ defineOptions({name: 'DrawView'})
 const gameStore = useGameStore()
 const uiStore = useUiStore()
 
-// 使用 useDraw composable 處理抽獎邏輯
+// 使用 useDraw composable 处理抽奖逻辑
 const {
   currentCategory,
   availableItems,
@@ -24,74 +24,98 @@ const {
   selectCategory,
 } = useDraw()
 
-// 使用 useMascotState 處理吉祥物狀態
+// 使用 useMascotState 处理吉祥物状态
 const {mascotState} = useMascotState('draw')
 
-// 主題顏色樣式映射
+// 主题颜色样式映射
 const themeColorStyles: Record<ThemeColor, {
   text: string
+  textHex: string
   bg: string
   border: string
   gradient: string
   glow: string
+  buttonGradient: string
+  ambientColor: string
 }> = {
   cyan: {
     text: 'text-cyan-400',
+    textHex: '#22d3ee',
     bg: 'bg-cyan-400/10',
     border: 'border-cyan-400/30',
     gradient: 'from-cyan-400 via-teal-400 to-emerald-400',
-    glow: 'shadow-[0_0_20px_rgba(34,211,238,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(34,211,238,0.4)]',
+    buttonGradient: 'from-cyan-500 to-teal-500',
+    ambientColor: 'rgba(34,211,238,0.15)'
   },
   blue: {
     text: 'text-blue-400',
+    textHex: '#60a5fa',
     bg: 'bg-blue-400/10',
     border: 'border-blue-400/30',
     gradient: 'from-blue-400 via-indigo-400 to-violet-400',
-    glow: 'shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(59,130,246,0.4)]',
+    buttonGradient: 'from-blue-500 to-indigo-500',
+    ambientColor: 'rgba(59,130,246,0.15)'
   },
   purple: {
     text: 'text-purple-400',
+    textHex: '#c084fc',
     bg: 'bg-purple-400/10',
     border: 'border-purple-400/30',
     gradient: 'from-purple-400 via-violet-400 to-fuchsia-400',
-    glow: 'shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(168,85,247,0.4)]',
+    buttonGradient: 'from-purple-500 to-violet-500',
+    ambientColor: 'rgba(168,85,247,0.15)'
   },
   pink: {
     text: 'text-pink-400',
+    textHex: '#f472b6',
     bg: 'bg-pink-400/10',
     border: 'border-pink-400/30',
     gradient: 'from-pink-400 via-rose-400 to-red-400',
-    glow: 'shadow-[0_0_20px_rgba(236,72,153,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(236,72,153,0.4)]',
+    buttonGradient: 'from-pink-500 to-rose-500',
+    ambientColor: 'rgba(236,72,153,0.15)'
   },
   gold: {
     text: 'text-amber-400',
+    textHex: '#fbbf24',
     bg: 'bg-amber-400/10',
     border: 'border-amber-400/30',
     gradient: 'from-amber-300 via-yellow-400 to-orange-400',
-    glow: 'shadow-[0_0_20px_rgba(251,191,36,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(251,191,36,0.4)]',
+    buttonGradient: 'from-amber-500 to-orange-500',
+    ambientColor: 'rgba(251,191,36,0.15)'
   },
   emerald: {
     text: 'text-emerald-400',
+    textHex: '#34d399',
     bg: 'bg-emerald-400/10',
     border: 'border-emerald-400/30',
     gradient: 'from-emerald-400 via-green-400 to-teal-400',
-    glow: 'shadow-[0_0_20px_rgba(52,211,153,0.3)]'
+    glow: 'shadow-[0_0_30px_rgba(52,211,153,0.4)]',
+    buttonGradient: 'from-emerald-500 to-green-500',
+    ambientColor: 'rgba(52,211,153,0.15)'
   },
 }
 
-// 當前主題樣式
+// 当前主题样式
 const currentTheme = computed(() => {
   const color = currentCategory.value?.themeColor || 'cyan'
   return themeColorStyles[color]
 })
 
-// 快速調整抽取人數
+// 当前主题颜色
+const currentThemeColor = computed(() => currentCategory.value?.themeColor || 'cyan')
+
+// 快速调整抽取人数
 const adjustDrawCount = (delta: number) => {
   const newValue = Math.max(1, Math.min(100, uiStore.drawCount + delta))
   uiStore.setDrawCount(newValue)
 }
 
-// 返回配置頁面
+// 返回配置页面
 const goBack = () => {
   uiStore.setView('setup')
 }
@@ -99,13 +123,22 @@ const goBack = () => {
 
 <template>
   <div class="min-h-screen pt-1 md:pt-20 px-1 sm:px-6 pb-28 md:pb-8 animate-fade-in bg-night-deep">
-    <!-- 共用背景光暈組件 - 旋轉時啟用動畫效果 -->
+    <!-- 动态背景光晕 - 根据主题色变化 -->
+    <div
+        class="fixed inset-0 pointer-events-none transition-all duration-700"
+        :style="{
+        background: `radial-gradient(ellipse at 50% 30%, ${currentTheme.ambientColor} 0%, transparent 60%)`
+      }"
+    />
     <NAmbientBg :animated="uiStore.isSpinning" intensity="low"/>
 
     <div class="relative z-10 max-w-7xl mx-auto">
       <!-- Back Button - Desktop only -->
       <button
-          class="hidden md:flex mb-8 items-center gap-2 text-txt-muted hover:text-cat-eye font-medium text-sm transition-colors group"
+          :class="[
+          'hidden md:flex mb-8 items-center gap-2 font-medium text-sm transition-colors group',
+          'text-txt-muted hover:' + currentTheme.text
+        ]"
           @click="goBack"
       >
         <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform"/>
@@ -113,69 +146,74 @@ const goBack = () => {
       </button>
 
       <!-- ========================================== -->
-      <!-- MOBILE LAYOUT - 沉浸式全屏抽獎體驗 -->
+      <!-- MOBILE LAYOUT - 沉浸式全屏抽奖体验 -->
       <!-- ========================================== -->
       <div class="lg:hidden flex flex-col">
-        <!-- 頂部: 標題 + 統計 (使用動態主題色) -->
-        <header class="text-center mb-1">
+        <!-- 顶部: 标题 + 统计 (使用动态主题色) -->
+        <header class="text-center mb-3">
           <h1 :class="[
-            'text-5xl sm:text-3xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mt-5 mb-5',
+            'text-3xl sm:text-4xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r mt-3 mb-3',
             currentTheme.gradient
           ]">
-            {{ currentCategory?.name || '命運轉盤' }}
+            {{ currentCategory?.name || '命运转盘' }}
           </h1>
-          <div class="flex justify-center gap-20 mt-1.5">
-            <span :class="['text-lg font-mono font-semibold', currentTheme.text]">
-              <Users class="w-5 h-5 inline mr-2"/>{{ availableItems.length }} 待抽
+          <div class="flex justify-center gap-8 mt-1">
+            <span :class="['text-base font-mono font-semibold flex items-center gap-1.5', currentTheme.text]">
+              <Users class="w-4 h-4"/>{{ availableItems.length }} 待抽
             </span>
-            <span class="text-lg text-accent-warm font-mono font-semibold">
-              <Trophy class="w-5 h-5 inline mr-2"/>{{ wonItems.length }} 已中
+            <span class="text-base text-accent-warm font-mono font-semibold flex items-center gap-1.5">
+              <Trophy class="w-4 h-4"/>{{ wonItems.length }} 已中
             </span>
           </div>
         </header>
 
-        <!-- 核心焦點: 超大轉盤 -->
-        <div class="flex justify-center -mx-1 mt-7 mb-7">
-          <FateWheel :items="availableItems" size="xl"/>
+        <!-- 核心焦点: 水车式滚动 -->
+        <div class="flex justify-center my-4">
+          <SlotMachine
+              :items="availableItems"
+              :theme-color="currentThemeColor"
+          />
         </div>
 
-        <!-- 控制區域 -->
-        <div class="mt-1 px-2 space-y-1.5">
-          <!-- 抽取人數 + 重置 -->
+        <!-- 控制区域 -->
+        <div class="mt-2 px-2 space-y-2">
+          <!-- 抽取人数 + 重置 -->
           <div
               :class="[
-                'flex items-center justify-between backdrop-blur-sm rounded-xl px-3 py-2 border transition-all duration-300',
-                currentTheme.bg,
-                currentTheme.border
-              ]">
+              'flex items-center justify-between backdrop-blur-sm rounded-xl px-3 py-2.5 border transition-all duration-300',
+              currentTheme.bg,
+              currentTheme.border
+            ]">
             <div class="flex items-center gap-2">
               <span class="text-xs text-txt-muted/70">抽取</span>
               <button
                   :class="[
-                    'w-7 h-7 rounded-full flex items-center justify-center text-txt-muted transition-colors',
-                    'bg-night-elevated/60 hover:' + currentTheme.text
-                  ]"
+                  'w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200',
+                  currentTheme.bg, currentTheme.border, 'border',
+                  'active:scale-90'
+                ]"
                   @click="adjustDrawCount(-1)"
               >
-                <Minus class="w-3.5 h-3.5"/>
+                <Minus :class="['w-4 h-4', currentTheme.text]"/>
               </button>
-              <span :class="['w-8 text-center font-mono font-bold text-lg', currentTheme.text]">
+              <span :class="['w-10 text-center font-mono font-bold text-xl', currentTheme.text]">
                 {{ uiStore.drawCount }}
               </span>
               <button
                   :class="[
-                    'w-7 h-7 rounded-full flex items-center justify-center text-txt-muted transition-colors',
-                    'bg-night-elevated/60 hover:' + currentTheme.text
-                  ]"
+                  'w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200',
+                  currentTheme.bg, currentTheme.border, 'border',
+                  'active:scale-90'
+                ]"
                   @click="adjustDrawCount(1)"
               >
-                <Plus class="w-3.5 h-3.5"/>
+                <Plus :class="['w-4 h-4', currentTheme.text]"/>
               </button>
               <span class="text-xs text-txt-muted/70">人</span>
             </div>
 
             <button
-                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-txt-muted/70 hover:text-accent-warm hover:bg-night-elevated/30 transition-colors"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-txt-muted/70 hover:text-accent-warm hover:bg-accent-warm/10 transition-colors"
                 @click="confirmResetWinners"
             >
               <RotateCcw class="w-3.5 h-3.5"/>
@@ -183,61 +221,39 @@ const goBack = () => {
             </button>
           </div>
 
-          <!-- 分組快速切換 (使用各自主題色) -->
+          <!-- 分组快速切换 (使用各自主题色) -->
           <div
               v-if="gameStore.categories.length > 1"
-              class="flex flex-wrap gap-1.5 justify-center"
+              class="flex flex-wrap gap-1.5 justify-center py-1"
           >
             <button
                 v-for="category in gameStore.categories"
                 :key="category.id"
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-medium transition-all',
-                  gameStore.currentCategoryId === category.id
-                    ? [themeColorStyles[category.themeColor].bg, themeColorStyles[category.themeColor].text, themeColorStyles[category.themeColor].border, 'border']
-                    : 'bg-night-surface/30 text-txt-muted/70 border border-transparent'
-                ]"
+                'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200',
+                gameStore.currentCategoryId === category.id
+                  ? [
+                      themeColorStyles[category.themeColor].bg,
+                      themeColorStyles[category.themeColor].text,
+                      themeColorStyles[category.themeColor].border,
+                      'border',
+                      themeColorStyles[category.themeColor].glow
+                    ]
+                  : 'bg-night-surface/30 text-txt-muted/70 border border-transparent hover:bg-night-surface/50'
+              ]"
                 @click="selectCategory(category.id)"
             >
               {{ category.name }}
             </button>
           </div>
 
-          <!-- 待抽名單 (使用動態主題色) -->
-          <div :class="[
-            'backdrop-blur-sm rounded-xl p-2 border transition-all duration-300',
-            currentTheme.bg,
-            currentTheme.border
-          ]">
-            <div
-                v-if="availableItems.length > 0"
-                class="flex flex-wrap gap-1 justify-center max-h-[12vh] overflow-y-auto"
-            >
-              <span
-                  v-for="item in availableItems"
-                  :key="item.id"
-                  :class="[
-                    'px-2 py-0.5 rounded-full text-xs font-mono font-medium border',
-                    currentTheme.bg,
-                    currentTheme.text,
-                    currentTheme.border
-                  ]"
-              >
-                {{ item.name }}
-              </span>
-            </div>
-            <div v-else class="text-center py-2 text-txt-muted/50 text-sm">
-              🎉 全部抽完啦！
-            </div>
-          </div>
-
-          <!-- 已中獎名單 -->
-          <div v-if="wonItems.length > 0" class="flex flex-wrap gap-1 justify-center max-h-[5vh] overflow-y-auto">
+          <!-- 已中奖名单 -->
+          <div v-if="wonItems.length > 0" class="flex flex-wrap gap-1 justify-center max-h-[8vh] overflow-y-auto py-1">
             <span
                 v-for="item in wonItems"
                 :key="item.id"
-                class="px-1.5 py-0.5 rounded-full text-[10px] font-mono
-                     bg-night-elevated/20 text-txt-muted/40 line-through"
+                class="px-2 py-0.5 rounded-full text-[10px] font-mono
+                   bg-night-elevated/20 text-txt-muted/40 line-through"
             >
               {{ item.name }}
             </span>
@@ -246,7 +262,7 @@ const goBack = () => {
       </div>
 
       <!-- ========================================== -->
-      <!-- DESKTOP LAYOUT - 完整三欄布局 -->
+      <!-- DESKTOP LAYOUT - 完整三栏布局 -->
       <!-- ========================================== -->
       <div class="hidden lg:grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         <!-- LEFT COLUMN: Config Panel + Mascot -->
@@ -259,7 +275,7 @@ const goBack = () => {
             />
           </div>
 
-          <!-- Category Selector (使用各自主題色) -->
+          <!-- Category Selector (使用各自主题色) -->
           <NCard
               v-if="gameStore.categories.length > 1"
               variant="glass"
@@ -267,28 +283,33 @@ const goBack = () => {
           >
             <h2 :class="['font-medium text-sm mb-4 flex items-center gap-2', currentTheme.text]">
               <Settings2 class="w-4 h-4"/>
-              切換分組
+              切换分组
             </h2>
             <div class="space-y-2">
               <button
                   v-for="category in gameStore.categories"
                   :key="category.id"
                   :class="[
-                    'w-full p-3 rounded-2xl text-left transition-all duration-200 text-sm font-medium border',
-                    gameStore.currentCategoryId === category.id
-                      ? [themeColorStyles[category.themeColor].bg, themeColorStyles[category.themeColor].text, themeColorStyles[category.themeColor].border]
-                      : 'hover:bg-glass-highlight text-txt-secondary border-transparent'
-                  ]"
+                  'w-full p-3 rounded-2xl text-left transition-all duration-200 text-sm font-medium border',
+                  gameStore.currentCategoryId === category.id
+                    ? [
+                        themeColorStyles[category.themeColor].bg,
+                        themeColorStyles[category.themeColor].text,
+                        themeColorStyles[category.themeColor].border,
+                        themeColorStyles[category.themeColor].glow
+                      ]
+                    : 'hover:bg-glass-highlight text-txt-secondary border-transparent'
+                ]"
                   @click="selectCategory(category.id)"
               >
                 <div class="flex items-center gap-3">
                   <div
                       :class="[
-                        'w-3 h-3 rounded-full transition-all',
-                        gameStore.currentCategoryId === category.id
-                          ? themeColorStyles[category.themeColor].text.replace('text-', 'bg-')
-                          : 'bg-night-muted'
-                      ]"
+                      'w-3 h-3 rounded-full transition-all',
+                      gameStore.currentCategoryId === category.id
+                        ? themeColorStyles[category.themeColor].text.replace('text-', 'bg-')
+                        : 'bg-night-muted'
+                    ]"
                   />
                   {{ category.name }}
                 </div>
@@ -300,13 +321,13 @@ const goBack = () => {
           <NCard variant="glass" padding="md">
             <h2 :class="['font-medium text-sm mb-4 flex items-center gap-2', currentTheme.text]">
               <Settings2 class="w-4 h-4"/>
-              抽獎配置
+              抽奖配置
             </h2>
 
             <div class="space-y-5">
               <div class="text-center">
                 <label class="text-xs font-semibold text-txt-muted uppercase tracking-wider block mb-3">
-                  抽取人數
+                  抽取人数
                 </label>
                 <NInput
                     v-model="uiStore.drawCount"
@@ -327,12 +348,12 @@ const goBack = () => {
                   @click="confirmResetWinners"
               >
                 <RotateCcw class="w-4 h-4"/>
-                重置中獎狀態
+                重置中奖状态
               </NButton>
             </div>
           </NCard>
 
-          <!-- Stats (使用動態主題色) -->
+          <!-- Stats (使用动态主题色) -->
           <NCard variant="glow" padding="md" :class="currentTheme.glow">
             <div class="grid grid-cols-2 gap-4 text-center">
               <div>
@@ -342,7 +363,7 @@ const goBack = () => {
                 <div
                     class="text-xs text-txt-muted uppercase tracking-wider flex items-center justify-center gap-1 mt-1">
                   <Users class="w-3 h-3"/>
-                  剩餘
+                  剩余
                 </div>
               </div>
               <div>
@@ -352,30 +373,33 @@ const goBack = () => {
                 <div
                     class="text-xs text-txt-muted uppercase tracking-wider flex items-center justify-center gap-1 mt-1">
                   <Trophy class="w-3 h-3"/>
-                  已中獎
+                  已中奖
                 </div>
               </div>
             </div>
           </NCard>
         </div>
 
-        <!-- CENTER COLUMN: The Wheel -->
+        <!-- CENTER COLUMN: The Slot Machine -->
         <div class="lg:col-span-6 flex flex-col items-center">
-          <header class="text-center mb-10">
+          <header class="text-center mb-8">
             <h1 :class="[
               'text-5xl lg:text-6xl font-display font-bold tracking-wide mb-4 text-transparent bg-clip-text bg-gradient-to-r',
               currentTheme.gradient
             ]">
-              {{ currentCategory?.name || '命運轉盤' }}
+              {{ currentCategory?.name || '命运转盘' }}
             </h1>
             <p class="text-txt-muted italic text-lg font-medium">
-              命運的輪盤，裁決天選之人的誕生
+              命运的转轮，裁决天选之人的诞生
             </p>
           </header>
 
-          <FateWheel :items="availableItems"/>
+          <SlotMachine
+              :items="availableItems"
+              :theme-color="currentThemeColor"
+          />
 
-          <div class="flex flex-col items-center mt-10">
+          <div class="flex flex-col items-center mt-8">
             <NFateButton
                 :disabled="availableItems.length === 0"
                 :loading="uiStore.isSpinning"
@@ -383,18 +407,18 @@ const goBack = () => {
             />
           </div>
 
-          <!-- Available items grid (使用動態主題色) -->
-          <div class="mt-10 w-full max-w-xl">
+          <!-- Available items grid (使用动态主题色) -->
+          <div class="mt-8 w-full max-w-xl">
             <div class="flex flex-wrap gap-2 justify-center">
               <span
                   v-for="item in currentCategory?.items || []"
                   :key="item.id"
                   :class="[
-                    'px-3 py-1.5 rounded-full text-xs font-mono font-medium transition-all',
-                    item.hasWon
-                      ? 'bg-night-surface/30 text-txt-muted line-through'
-                      : [currentTheme.bg, currentTheme.text, currentTheme.border, 'border']
-                  ]"
+                  'px-3 py-1.5 rounded-full text-xs font-mono font-medium transition-all',
+                  item.hasWon
+                    ? 'bg-night-surface/30 text-txt-muted line-through'
+                    : [currentTheme.bg, currentTheme.text, currentTheme.border, 'border']
+                ]"
               >
                 {{ item.name }}
               </span>
@@ -410,11 +434,11 @@ const goBack = () => {
     </div>
 
     <!-- ========================================== -->
-    <!-- MOBILE STICKY BOTTOM SPIN BUTTON (更大的按鈕) -->
+    <!-- MOBILE STICKY BOTTOM SPIN BUTTON -->
     <!-- ========================================== -->
     <div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden pb-2">
       <NFateButton
-          size="xl"
+          size="lg"
           :disabled="availableItems.length === 0"
           :loading="uiStore.isSpinning"
           @activate="startDraw"

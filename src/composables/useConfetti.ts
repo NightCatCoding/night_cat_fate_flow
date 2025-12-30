@@ -2,18 +2,10 @@ import confetti from 'canvas-confetti'
 import type {ThemeColor} from '@/types'
 import {useGameStore} from '@/stores'
 
-// 彩花 z-index - 設在背景遮罩(z-90)之上，Modal內容(z-100)之下
+// 彩花 z-index - 设在背景遮罩(z-90)之上，Modal内容(z-100)之下
 const CONFETTI_Z_INDEX = 95
 
-// 灑花持續時間映射（毫秒）
-const CONFETTI_DURATION_MAP = {
-    short: {base: 2000, celebration: 2500, rainbow: 3000},
-    normal: {base: 3000, celebration: 4000, rainbow: 5000},
-    long: {base: 4500, celebration: 6000, rainbow: 7500},
-    epic: {base: 6000, celebration: 8000, rainbow: 10000},
-}
-
-// 更豐富的顏色映射 - 每個主題包含主色、輔色、金色點綴
+// 更丰富的颜色映射 - 每个主题包含主色、辅色、金色点缀
 const colorMap: Record<ThemeColor, string[]> = {
     blue: ['#38bdf8', '#0ea5e9', '#7dd3fc', '#bae6fd', '#fbbf24', '#fef3c7'],
     purple: ['#a855f7', '#c084fc', '#d8b4fe', '#9333ea', '#f472b6', '#fbbf24'],
@@ -23,30 +15,30 @@ const colorMap: Record<ThemeColor, string[]> = {
     emerald: ['#34d399', '#4ade80', '#86efac', '#10b981', '#fbbf24', '#a5f3fc'],
 }
 
-// 彩虹色 - 用於超級慶祝
+// 彩虹色 - 用于超级庆祝
 const RAINBOW_COLORS = [
     '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff',
     '#5f27cd', '#00d2d3', '#1dd1a1', '#ffeaa7', '#fd79a8',
 ]
 
-// 金色系 - 豪華感
+// 金色系 - 豪华感
 const GOLD_SPARKLE = ['#fbbf24', '#fcd34d', '#fef08a', '#f59e0b', '#fef3c7', '#fffbeb']
 
 export function useConfetti() {
     const gameStore = useGameStore()
 
-    // 獲取當前灑花持續時間設定
-    const getDurations = () => {
-        const setting = gameStore.settings.confettiDuration || 'normal'
-        return CONFETTI_DURATION_MAP[setting]
+    // 获取当前洒花持续时间设定（秒 -> 毫秒）
+    const getDuration = () => {
+        return (gameStore.settings.confettiDuration || 5) * 1000
     }
+
     /**
-     * 基礎彩花爆發
+     * 基础彩花爆发
      */
     const fireConfetti = (themeColor: ThemeColor = 'cyan') => {
         const colors = colorMap[themeColor]
 
-        // 中央大爆發
+        // 中央大爆发
         confetti({
             particleCount: 150,
             spread: 100,
@@ -58,7 +50,7 @@ export function useConfetti() {
             zIndex: CONFETTI_Z_INDEX,
         })
 
-        // 左側發射
+        // 左侧发射
         setTimeout(() => {
             confetti({
                 particleCount: 80,
@@ -71,7 +63,7 @@ export function useConfetti() {
             })
         }, 150)
 
-        // 右側發射
+        // 右侧发射
         setTimeout(() => {
             confetti({
                 particleCount: 80,
@@ -84,7 +76,7 @@ export function useConfetti() {
             })
         }, 150)
 
-        // 金色點綴（延遲）
+        // 金色点缀（延迟）
         setTimeout(() => {
             confetti({
                 particleCount: 30,
@@ -101,12 +93,12 @@ export function useConfetti() {
     }
 
     /**
-     * 星星爆發效果
+     * 星星爆发效果
      */
     const fireStars = (themeColor: ThemeColor = 'gold') => {
         const colors = colorMap[themeColor]
 
-        // 中心星星爆發
+        // 中心星星爆发
         confetti({
             particleCount: 60,
             spread: 360,
@@ -139,15 +131,14 @@ export function useConfetti() {
     }
 
     /**
-     * 豪華慶祝效果 - 中獎專用
+     * 豪华庆祝效果 - 中奖专用
      */
     const fireCelebration = (themeColor: ThemeColor = 'cyan') => {
-        const durations = getDurations()
-        const duration = durations.celebration
+        const duration = getDuration()
         const animationEnd = Date.now() + duration
         const colors = [...colorMap[themeColor], ...GOLD_SPARKLE]
 
-        // 初始大爆發
+        // 初始大爆发
         confetti({
             particleCount: 200,
             spread: 120,
@@ -159,7 +150,7 @@ export function useConfetti() {
             zIndex: CONFETTI_Z_INDEX,
         })
 
-        // 星星爆發
+        // 星星爆发
         setTimeout(() => {
             confetti({
                 particleCount: 80,
@@ -175,11 +166,11 @@ export function useConfetti() {
             })
         }, 300)
 
-        // 持續的側邊發射
+        // 持续的侧边发射
         const frame = () => {
             const timeLeft = animationEnd - Date.now()
 
-            // 根據剩餘時間調整粒子數
+            // 根据剩余时间调整粒子数
             const particleCount = Math.max(2, Math.floor(timeLeft / 500))
 
             confetti({
@@ -209,10 +200,10 @@ export function useConfetti() {
             }
         }
 
-        // 延遲開始持續發射
+        // 延迟开始持续发射
         setTimeout(frame, 500)
 
-        // 中間補充爆發
+        // 中间补充爆发
         setTimeout(() => {
             confetti({
                 particleCount: 100,
@@ -224,7 +215,7 @@ export function useConfetti() {
             })
         }, duration * 0.4)
 
-        // 最後金色收尾
+        // 最后金色收尾
         setTimeout(() => {
             confetti({
                 particleCount: 50,
@@ -242,14 +233,13 @@ export function useConfetti() {
     }
 
     /**
-     * 彩虹瀑布效果 - 超級大獎專用
+     * 彩虹瀑布效果 - 超级大奖专用
      */
     const fireRainbow = () => {
-        const durations = getDurations()
-        const duration = durations.rainbow
+        const duration = getDuration()
         const animationEnd = Date.now() + duration
 
-        // 大型彩虹爆發
+        // 大型彩虹爆发
         confetti({
             particleCount: 250,
             spread: 180,
@@ -261,7 +251,7 @@ export function useConfetti() {
             zIndex: CONFETTI_Z_INDEX,
         })
 
-        // 左右交替發射
+        // 左右交替发射
         let side = 0
         const frame = () => {
             side = 1 - side // 交替
@@ -278,7 +268,7 @@ export function useConfetti() {
                 zIndex: CONFETTI_Z_INDEX,
             })
 
-            // 金色點綴
+            // 金色点缀
             if (Math.random() > 0.7) {
                 confetti({
                     particleCount: 3,
@@ -300,7 +290,7 @@ export function useConfetti() {
 
         frame()
 
-        // 週期性大爆發 - 根據總時長動態計算
+        // 周期性大爆发 - 根据总时长动态计算
         const burstCount = Math.floor(duration / 1000)
         for (let i = 1; i < burstCount; i++) {
             setTimeout(() => {
@@ -317,12 +307,12 @@ export function useConfetti() {
     }
 
     /**
-     * 快速閃爍效果 - 輕量級慶祝
+     * 快速闪烁效果 - 轻量级庆祝
      */
     const fireSparkle = (themeColor: ThemeColor = 'gold') => {
         const colors = [...colorMap[themeColor], ...GOLD_SPARKLE]
 
-        // 三次快速閃爍
+        // 三次快速闪烁
         for (let i = 0; i < 3; i++) {
             setTimeout(() => {
                 confetti({

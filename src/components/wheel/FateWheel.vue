@@ -23,8 +23,7 @@ const {segments} = useWheel(toRef(props, 'items'))
 
 // 计算转盘旋转样式
 const wheelStyle = computed(() => {
-  const durationMap = {slow: 7, normal: 5, fast: 3}
-  const duration = durationMap[gameStore.settings.animationSpeed]
+  const duration = gameStore.settings.spinDuration
 
   return {
     transform: `rotate(${uiStore.rotation}deg)`,

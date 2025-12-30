@@ -1,13 +1,7 @@
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useGameStore, useUiStore} from '@/stores'
 import {useConfetti} from './useConfetti'
-
-// 動畫時長映射（毫秒）
-const ANIMATION_DURATION_MAP = {
-    slow: 7000,
-    normal: 5000,
-    fast: 3000,
-} as const
+import type {Item} from '@/types'
 
 /**
  * 抽獎流程 Composable
@@ -17,6 +11,9 @@ export function useDraw() {
     const gameStore = useGameStore()
     const uiStore = useUiStore()
     const {fireCelebration, fireRainbow} = useConfetti()
+
+    // 預選的中獎者（在動畫開始時決定）
+    const pendingWinners = ref<Item[]>([])
 
     // 當前分組
     const currentCategory = computed(() => gameStore.currentCategory)
@@ -32,9 +29,9 @@ export function useDraw() {
         availableItems.value.length > 0 && !uiStore.isSpinning
     )
 
-    // 動畫持續時間
+    // 動畫持續時間（毫秒）
     const animationDuration = computed(() =>
-        ANIMATION_DURATION_MAP[gameStore.settings.animationSpeed]
+        gameStore.settings.spinDuration * 1000
     )
 
     /**
@@ -49,29 +46,42 @@ export function useDraw() {
             return false
         }
 
-        // 開始旋轉動畫
-        uiStore.startSpin()
+        // 🎯 關鍵：先預選中獎者（不修改狀態）
+        const winners = gameStore.preSelectWinners(
+            currentCategory.value.id,
+            uiStore.drawCount
+        )
 
-        // 動畫結束後執行抽獎
+        if (winners.length === 0) {
+            uiStore.addToast('沒有可抽取的參與者', 'warning')
+            return false
+        }
+
+        // 保存預選的中獎者
+        pendingWinners.value = winners
+
+        // 開始旋轉動畫，傳入中獎者 ID
+        uiStore.startSpin(winners.map(w => w.id))
+
+        // 動畫結束後確認中獎
         setTimeout(() => {
             uiStore.stopSpin()
 
-            const winners = gameStore.performDraw(
-                currentCategory.value!.id,
-                uiStore.drawCount
-            )
+            // 確認中獎（標記狀態、記錄歷史）
+            gameStore.confirmWinners(currentCategory.value!.id, pendingWinners.value)
 
-            if (winners.length > 0) {
+            if (pendingWinners.value.length > 0) {
                 // 根據中獎人數選擇彩花效果
-                if (winners.length >= 3) {
-                    // 多人中獎 - 彩虹瀑布效果
+                if (pendingWinners.value.length >= 3) {
                     fireRainbow()
                 } else {
-                    // 1-2人中獎 - 豪華慶祝效果
                     fireCelebration('cyan')
                 }
-                uiStore.showWinners(winners)
+                uiStore.showWinners(pendingWinners.value)
             }
+
+            // 清空預選
+            pendingWinners.value = []
         }, animationDuration.value)
 
         return true
@@ -109,6 +119,7 @@ export function useDraw() {
         wonItems,
         canStartDraw,
         animationDuration,
+        pendingWinners,
 
         // 方法
         startDraw,

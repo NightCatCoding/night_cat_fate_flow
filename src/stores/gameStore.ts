@@ -10,10 +10,10 @@ export const useGameStore = defineStore('game', () => {
     const currentCategoryId = ref<string | null>(null)
     const history = ref<DrawResult[]>([])
     const settings = ref<GlobalSettings>({
-        animationSpeed: 'normal',
+        spinDuration: 5,  // 默认5秒
         removeAfterWin: true,
         language: 'zh',
-        confettiDuration: 'normal',
+        confettiDuration: 5,  // 默认5秒
     })
 
     // Getters
@@ -146,6 +146,56 @@ export const useGameStore = defineStore('game', () => {
     }
 
     // Actions - Drawing
+
+    // 預選中獎者（不修改狀態，只返回將要中獎的人）
+    const preSelectWinners = (categoryId: string, count: number): Item[] => {
+        const category = getCategoryById(categoryId)
+        if (!category) return []
+
+        const pool = category.items.filter(item => !item.hasWon)
+        if (pool.length === 0) return []
+
+        const actualCount = Math.min(count, pool.length)
+
+        // Fisher-Yates shuffle
+        const shuffled = [...pool]
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+            ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+        }
+
+        return shuffled.slice(0, actualCount)
+    }
+
+    // 確認中獎者（標記狀態、記錄歷史）
+    const confirmWinners = (categoryId: string, winners: Item[]): void => {
+        const category = getCategoryById(categoryId)
+        if (!category || winners.length === 0) return
+
+        // Mark winners
+        if (settings.value.removeAfterWin) {
+            winners.forEach(winner => {
+                const itemIndex = category.items.findIndex(i => i.id === winner.id)
+                if (itemIndex !== -1) {
+                    category.items[itemIndex].hasWon = true
+                }
+            })
+        }
+
+        // Record to history
+        const result: DrawResult = {
+            id: generateId(),
+            categoryId,
+            categoryName: category.name,
+            winners: [...winners],
+            timestamp: Date.now(),
+            themeColor: category.themeColor,
+        }
+        history.value.unshift(result)
+
+        category.updatedAt = Date.now()
+    }
+
     const performDraw = (categoryId: string, count: number): Item[] => {
         const category = getCategoryById(categoryId)
         if (!category) return []
@@ -267,6 +317,8 @@ export const useGameStore = defineStore('game', () => {
         resetCategoryWinners,
 
         // Actions - Drawing
+        preSelectWinners,
+        confirmWinners,
         performDraw,
 
         // Actions - Settings

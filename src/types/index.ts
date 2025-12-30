@@ -34,10 +34,10 @@ export interface DrawResult {
 }
 
 export interface GlobalSettings {
-    animationSpeed: 'slow' | 'normal' | 'fast'
+    spinDuration: number  // 1-10 秒
     removeAfterWin: boolean
     language: 'zh' | 'en'
-    confettiDuration: 'short' | 'normal' | 'long' | 'epic'  // 灑花持續時間
+    confettiDuration: number  // 1-10 秒
 }
 
 // Theme color mapping utilities
