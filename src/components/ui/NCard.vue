@@ -32,7 +32,7 @@ const VARIANT_MAP = {
 } as const
 
 const cardClasses = computed(() => {
-  const classes = [
+  const classes: string[] = [
     VARIANT_MAP[props.variant],
     PADDING_MAP[props.padding],
   ]

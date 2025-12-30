@@ -1,14 +1,13 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {resolve} from 'path'
+import path from 'path' // 確保這樣引入
 
-// https://vite.dev/config/
 export default defineConfig({
     plugins: [vue()],
     base: '/night_cat_fate_flow/',
     resolve: {
         alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': path.resolve(__dirname, 'src'),
         },
     },
     build: {

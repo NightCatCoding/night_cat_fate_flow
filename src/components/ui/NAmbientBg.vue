@@ -8,7 +8,7 @@ interface Props {
   intensity?: 'low' | 'medium' | 'high'
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   animated: false,
   intensity: 'medium',
 })
