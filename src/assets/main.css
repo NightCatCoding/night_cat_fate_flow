@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   Night Cat Fate Flow - Soft Cyber-Noir
+   "Bioluminescent, not laser sharp"
+   ======================================== */
+
+@layer base {
+    :root {
+        /* 动态主题色 - RGB 格式供 Tailwind 使用 */
+        --cat-eye: 45, 212, 191;
+        --cat-spark: 94, 234, 212;
+        --cat-glow: 20, 184, 166;
+
+        --night-deep: #0f172a;
+        --night-surface: #1e293b;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /* 完全隱藏橫向滾動 */
+        overflow-x: hidden;
+    }
+
+    body {
+        @apply bg-night-deep text-txt-primary font-sans antialiased;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        overflow-x: hidden;
+        /* 使用 dvh 確保移動端正確計算高度 */
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+    /* 全局隱藏滾動條但保持滾動功能 */
+    html, body {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
+    }
+
+    /* Better dark mode input autofill */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+        -webkit-text-fill-color: #f1f5f9 !important;
+        caret-color: #f1f5f9;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+}
+
+@layer components {
+    /* Soft focus ring */
+    .focus-ring {
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-cat-eye/50 focus-visible:ring-offset-2 focus-visible:ring-offset-night-deep;
+    }
+
+    /* Soft text glow */
+    .text-glow {
+        text-shadow: 0 0 30px rgba(45, 212, 191, 0.4),
+        0 0 60px rgba(45, 212, 191, 0.2);
+    }
+
+    /* Glass card */
+    .card-glass {
+        @apply bg-glass-white backdrop-blur-xl border border-glass-border rounded-4xl shadow-glass;
+    }
+
+    /* Soft inner glow for containers */
+    .inner-glow {
+        box-shadow: inset 0 0 60px rgba(45, 212, 191, 0.03);
+    }
+}
+
+@layer utilities {
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Soft scrollbar styling */
+    .scrollbar-soft {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(71, 85, 105, 0.4) transparent;
+    }
+
+    .scrollbar-soft::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .scrollbar-soft::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-soft::-webkit-scrollbar-thumb {
+        background: rgba(71, 85, 105, 0.4);
+        border-radius: 4px;
+    }
+
+    .scrollbar-soft::-webkit-scrollbar-thumb:hover {
+        background: rgba(45, 212, 191, 0.4);
+    }
+
+    /* Gradient text helper */
+    .gradient-text {
+        @apply bg-gradient-to-r from-cat-spark via-cat-eye to-cat-glow bg-clip-text text-transparent;
+    }
+
+    /* Soft pulse for attention */
+    .pulse-attention {
+        animation: pulseAttention 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseAttention {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 0 12px rgba(45, 212, 191, 0);
+        }
+    }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* ========================================
+   內部元素滾動條樣式（非頁面主滾動條）
+   ======================================== */
+/* 只對特定可滾動容器顯示滾動條 */
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar,
+.scrollbar-soft::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-auto::-webkit-scrollbar-track,
+.scrollbar-soft::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb,
+.scrollbar-soft::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.3);
+    border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-auto::-webkit-scrollbar-thumb:hover,
+.scrollbar-soft::-webkit-scrollbar-thumb:hover {
+    background: rgba(45, 212, 191, 0.4);
+}
+
+/* Firefox */
+.overflow-y-auto,
+.overflow-auto,
+.scrollbar-soft {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(71, 85, 105, 0.3) transparent;
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ========================================
+   High Contrast Mode Support
+   ======================================== */
+@media (prefers-contrast: high) {
+    :root {
+        --cat-eye: 94, 234, 212;
+        --cat-spark: 167, 243, 208;
+        --cat-glow: 45, 212, 191;
+    }
+}

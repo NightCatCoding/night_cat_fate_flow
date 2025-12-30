@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+    html {
+        @apply antialiased;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+
+    body {
+        @apply bg-night-deep text-txt-primary;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* Focus styles */
+    *:focus-visible {
+        @apply outline-none ring-2 ring-cat-eye/50 ring-offset-2 ring-offset-night-deep;
+    }
+}
+
+/* ============================================
+   Component Layer - 共用組件樣式
+   ============================================ */
+@layer components {
+    /* 玻璃卡片 - 基礎版 */
+    .glass-card {
+        @apply bg-glass-white backdrop-blur-xl
+        border border-glass-border
+        rounded-4xl
+        shadow-glass
+        transition-all duration-300;
+    }
+
+    /* 玻璃卡片 - 帶發光效果 */
+    .glass-card-glow {
+        @apply glass-card
+        border-cat-eye/20
+        shadow-glow;
+    }
+
+    /* 玻璃卡片 - 可懸停版 */
+    .glass-card-hoverable {
+        @apply glass-card
+        cursor-pointer
+        hover:bg-glass-highlight
+        hover:border-cat-eye/30
+        hover:shadow-glow-sm
+        hover:scale-[1.01];
+    }
+
+    /* 背景光暈 - 左上角 */
+    .ambient-glow-tl {
+        @apply absolute top-[-20%] left-[-10%]
+        w-[50%] h-[50%]
+        rounded-full blur-[120px]
+        bg-cat-eye/[0.07]
+        pointer-events-none;
+    }
+
+    /* 背景光暈 - 右下角 */
+    .ambient-glow-br {
+        @apply absolute bottom-[-20%] right-[-10%]
+        w-[50%] h-[50%]
+        rounded-full blur-[120px]
+        bg-accent-warm/[0.05]
+        pointer-events-none;
+    }
+
+    /* 噪點紋理背景 */
+    .noise-overlay {
+        @apply absolute inset-0
+        opacity-[0.015]
+        bg-noise
+        pointer-events-none;
+    }
+
+    /* 狀態指示點 - 活躍 */
+    .status-dot-active {
+        @apply w-2.5 h-2.5 rounded-full
+        bg-cat-eye shadow-glow-sm
+        transition-all;
+    }
+
+    /* 狀態指示點 - 非活躍 */
+    .status-dot-inactive {
+        @apply w-2.5 h-2.5 rounded-full
+        bg-night-muted
+        transition-all;
+    }
+
+    /* 標籤 - 基礎 */
+    .tag-base {
+        @apply px-3 py-1.5 rounded-full
+        text-xs font-mono font-medium
+        transition-all;
+    }
+
+    /* 標籤 - 活躍項目 */
+    .tag-active {
+        @apply tag-base
+        bg-cat-eye/10 text-cat-eye
+        border border-cat-eye/20;
+    }
+
+    /* 標籤 - 已完成項目 */
+    .tag-done {
+        @apply tag-base
+        bg-night-surface/30 text-txt-muted
+        line-through;
+    }
+
+    /* 標籤 - 已中獎 */
+    .tag-winner {
+        @apply px-2.5 py-1 rounded-full
+        bg-accent-warm/20 text-accent-warm
+        text-xs font-semibold;
+    }
+
+    /* 區塊標題 */
+    .section-title {
+        @apply font-medium text-sm
+        text-cat-eye
+        flex items-center gap-2;
+    }
+}
+
+/* Custom utilities */
+@layer utilities {
+    .text-glow {
+        text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+    }
+
+    .text-glow-sm {
+        text-shadow: 0 0 10px currentColor;
+    }
+}
+
+/* Animation keyframes */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Font face fallbacks */
+.font-cinzel {
+    font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
