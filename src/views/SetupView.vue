@@ -24,7 +24,7 @@ const canStartDraw = computed(() => {
 // 进入抽奖页面
 const goToDraw = () => {
   if (!canStartDraw.value) {
-    uiStore.addToast('请先添加参与者', 'warning')
+    uiStore.addToast('请先添加选项', 'warning')
     return
   }
   uiStore.setView('draw')
@@ -64,10 +64,10 @@ const remainingPeople = computed(() =>
         </div>
 
         <h1 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cat-spark via-cat-eye to-cat-glow mb-1 md:mb-4">
-          命运配置中心
+          随机抽选中心
         </h1>
         <p class="text-txt-muted text-xs md:text-base lg:text-lg font-medium max-w-md mx-auto">
-          配置抽奖分组与参与者名单
+          配置清单与候选选项，万物皆可抽
         </p>
       </header>
 
@@ -78,19 +78,19 @@ const remainingPeople = computed(() =>
         <div class="flex items-center gap-1.5">
           <FolderOpen class="w-3.5 h-3.5 text-cat-eye/70"/>
           <span class="font-mono font-bold text-cat-eye">{{ gameStore.categories.length }}</span>
-          <span class="text-[10px] text-txt-muted">组</span>
+          <span class="text-[10px] text-txt-muted">清单</span>
         </div>
         <div class="w-px h-4 bg-glass-border/50"/>
         <div class="flex items-center gap-1.5">
           <Users class="w-3.5 h-3.5 text-cat-eye/70"/>
           <span class="font-mono font-bold text-cat-eye">{{ totalPeople }}</span>
-          <span class="text-[10px] text-txt-muted">人</span>
+          <span class="text-[10px] text-txt-muted">选项</span>
         </div>
         <div class="w-px h-4 bg-glass-border/50"/>
         <div class="flex items-center gap-1.5">
           <Sparkles class="w-3.5 h-3.5 text-accent-success/70"/>
           <span class="font-mono font-bold text-accent-success">{{ remainingPeople }}</span>
-          <span class="text-[10px] text-txt-muted">待抽</span>
+          <span class="text-[10px] text-txt-muted">待选</span>
         </div>
         <div class="w-px h-4 bg-glass-border/50"/>
         <div class="flex items-center gap-1.5">
@@ -110,7 +110,7 @@ const remainingPeople = computed(() =>
               class="text-3xl lg:text-4xl font-mono font-bold text-cat-eye group-hover:text-cat-spark transition-colors">
             {{ gameStore.categories.length }}
           </div>
-          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">分组</div>
+          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">清单</div>
         </NCard>
 
         <NCard variant="glass" padding="md" class="text-center group" hoverable>
@@ -121,7 +121,7 @@ const remainingPeople = computed(() =>
               class="text-3xl lg:text-4xl font-mono font-bold text-cat-eye group-hover:text-cat-spark transition-colors">
             {{ totalPeople }}
           </div>
-          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">总人数</div>
+          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">总选项</div>
         </NCard>
 
         <NCard variant="glass" padding="md" class="text-center group" hoverable>
@@ -132,7 +132,7 @@ const remainingPeople = computed(() =>
               class="text-3xl lg:text-4xl font-mono font-bold text-accent-success group-hover:text-emerald-300 transition-colors">
             {{ remainingPeople }}
           </div>
-          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">待抽取</div>
+          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">待选</div>
         </NCard>
 
         <NCard variant="glass" padding="md" class="text-center group" hoverable>
@@ -143,7 +143,7 @@ const remainingPeople = computed(() =>
               class="text-3xl lg:text-4xl font-mono font-bold text-accent-warm group-hover:text-amber-300 transition-colors">
             {{ gameStore.history.length }}
           </div>
-          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">已抽次数</div>
+          <div class="text-xs text-txt-muted uppercase tracking-wider font-medium mt-1">已选次数</div>
         </NCard>
       </div>
 
@@ -186,12 +186,12 @@ const remainingPeople = computed(() =>
             @click="goToDraw"
         >
           <Zap class="w-6 h-6"/>
-          进入命运大厅
+          开始抽选
           <ArrowRight class="w-6 h-6"/>
         </NButton>
 
         <p v-if="!canStartDraw" class="text-sm text-txt-muted mt-3 font-medium">
-          请先选择分组并添加参与者
+          请先选择清单并添加选项
         </p>
       </div>
     </div>

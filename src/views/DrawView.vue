@@ -143,18 +143,18 @@ const goBack = () => {
       <!-- MOBILE LAYOUT -->
       <!-- ========================================== -->
       <div class="lg:hidden flex flex-col">
-        <!-- 顶部: 标题 + 抽取人数 + 统计 -->
+        <!-- 顶部: 标题 + 抽取数量 + 统计 -->
         <header class="text-center mb-2 px-2">
           <h1 :class="[
             'text-2xl sm:text-3xl font-display font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r',
             currentTheme.gradient
           ]">
-            {{ currentCategory?.name || '命运转盘' }}
+            {{ currentCategory?.name || '随机转盘' }}
           </h1>
 
-          <!-- 抽取人数 + 统计 + 重置（紧凑单行） -->
+          <!-- 抽取数量 + 统计 + 重置（紧凑单行） -->
           <div class="flex items-center justify-center gap-3 mt-2">
-            <!-- 抽取人数 -->
+            <!-- 抽取数量 -->
             <div class="flex items-center gap-1">
               <button
                   :class="[
@@ -274,7 +274,7 @@ const goBack = () => {
           >
             <h2 :class="['font-medium text-sm mb-4 flex items-center gap-2', currentTheme.text]">
               <Settings2 class="w-4 h-4"/>
-              切换分组
+              切换清单
             </h2>
             <div class="space-y-2">
               <button
@@ -316,10 +316,10 @@ const goBack = () => {
               'text-5xl lg:text-6xl font-display font-bold tracking-wide mb-4 text-transparent bg-clip-text bg-gradient-to-r',
               currentTheme.gradient
             ]">
-              {{ currentCategory?.name || '命运转盘' }}
+              {{ currentCategory?.name || '随机转盘' }}
             </h1>
             <p class="text-txt-muted italic text-lg font-medium">
-              命运的转轮，裁决天选之人的诞生
+              转动轮盘，随机抽选，万物皆可
             </p>
           </header>
 
@@ -340,7 +340,7 @@ const goBack = () => {
             <NCard variant="glass" padding="md">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                  <span :class="['text-sm font-medium', currentTheme.text]">抽取人数</span>
+                  <span :class="['text-sm font-medium', currentTheme.text]">抽选数量</span>
                   <NInput
                     v-model="uiStore.drawCount"
                     type="number"
@@ -370,7 +370,7 @@ const goBack = () => {
                   </div>
                   <div class="text-xs text-txt-muted flex items-center gap-1">
                     <Users class="w-3 h-3"/>
-                    待抽
+                    待选
                   </div>
                 </div>
                 <div class="w-px h-10 bg-glass-border"/>
@@ -380,7 +380,7 @@ const goBack = () => {
                   </div>
                   <div class="text-xs text-txt-muted flex items-center gap-1">
                     <Trophy class="w-3 h-3"/>
-                    已中奖
+                    已选中
                   </div>
                 </div>
               </div>

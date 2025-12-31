@@ -25,7 +25,7 @@ const currentCategory = computed(() => gameStore.currentCategory)
 // Add single name
 const addSingleName = () => {
   if (!currentCategory.value) {
-    uiStore.addToast('请先选择一个分组', 'warning')
+    uiStore.addToast('请先选择一个清单', 'warning')
     return
   }
 
@@ -43,7 +43,7 @@ const addSingleName = () => {
 // Add bulk names
 const addBulkNames = () => {
   if (!currentCategory.value) {
-    uiStore.addToast('请先选择一个分组', 'warning')
+    uiStore.addToast('请先选择一个清单', 'warning')
     return
   }
 
@@ -120,7 +120,7 @@ const deleteItem = (itemId: string) => {
         class="text-center py-16 text-txt-muted"
     >
       <UserPlus class="w-14 h-14 mx-auto mb-4 opacity-30"/>
-      <p class="font-medium">请先选择或创建一个分组</p>
+      <p class="font-medium">请先选择或创建一个清单</p>
     </div>
 
     <template v-else>
@@ -128,7 +128,7 @@ const deleteItem = (itemId: string) => {
       <div>
         <h3 class="text-sm font-semibold mb-4 flex items-center gap-2 text-cat-eye">
           <UserPlus class="w-4 h-4"/>
-          添加成员到「{{ currentCategory.name }}」
+          添加选项到「{{ currentCategory.name }}」
         </h3>
 
         <!-- Single Input -->
@@ -197,7 +197,7 @@ const deleteItem = (itemId: string) => {
         <div class="px-6 py-5 border-b border-glass-border flex items-center justify-between">
           <h3 class="font-semibold text-sm flex items-center gap-2 text-cat-eye">
             <FileSpreadsheet class="w-4 h-4"/>
-            成员列表 ({{ currentCategory.items.length }})
+            选项列表 ({{ currentCategory.items.length }})
           </h3>
           <NButton
               v-if="currentCategory.items.length > 0"
@@ -215,8 +215,8 @@ const deleteItem = (itemId: string) => {
               v-if="currentCategory.items.length === 0"
               class="text-center py-12 text-txt-muted"
           >
-            <p class="font-medium">暂无成员</p>
-            <p class="text-sm mt-1 opacity-70">使用上方输入框添加成员</p>
+            <p class="font-medium">暂无选项</p>
+            <p class="text-sm mt-1 opacity-70">使用上方输入框添加选项</p>
           </div>
 
           <div v-else class="divide-y divide-glass-border/50">
@@ -268,7 +268,7 @@ const deleteItem = (itemId: string) => {
                       v-if="item.hasWon"
                       class="flex-shrink-0 text-xs px-2.5 py-1 rounded-full bg-accent-warm/20 text-accent-warm font-semibold"
                   >
-                    已中奖
+                    已选中
                   </span>
                 </template>
               </div>

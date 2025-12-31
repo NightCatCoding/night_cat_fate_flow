@@ -25,7 +25,7 @@ const confirmResetAll = () => {
 
   uiStore.openConfirm({
     title: '重置所有数据',
-    message: '确定要清空所有分组、成员和历史记录吗？此操作无法撤销！',
+    message: '确定要清空所有清单、选项和历史记录吗？此操作无法撤销！',
     confirmText: '全部清空',
     variant: 'danger',
     onConfirm: () => {

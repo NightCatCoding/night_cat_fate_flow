@@ -91,7 +91,7 @@ const currentTheme = computed(() => themeStyles[props.themeColor])
 const ITEM_HEIGHT = 56 // 每个项目的高度 (px)
 const VISIBLE_EXTRA = 3 // 框外上下各显示几个项目
 
-// 中奖框高度 = 抽取人数 × 项目高度
+// 中奖框高度 = 抽取数量 × 项目高度
 const winnerBoxHeight = computed(() => {
   return uiStore.drawCount * ITEM_HEIGHT
 })
@@ -316,7 +316,7 @@ watch(() => uiStore.drawCount, () => {
         <!-- 空状态 -->
         <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-txt-muted/50">
           <div class="text-5xl mb-3">🎰</div>
-          <p class="text-sm font-medium">暂无参与者</p>
+          <p class="text-sm font-medium">暂无候选项</p>
         </div>
 
         <!-- 上方渐变遮罩 -->
@@ -376,7 +376,7 @@ watch(() => uiStore.drawCount, () => {
             />
           </div>
 
-          <!-- 抽取人数指示 (多人时显示) -->
+          <!-- 抽取数量指示 (多人时显示) -->
           <div
               v-if="uiStore.drawCount > 1"
               :class="[

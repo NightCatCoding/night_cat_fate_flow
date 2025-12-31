@@ -1,4 +1,4 @@
-// Core data types for Night Cat Fate Flow
+// Core data types for Night Cat Serendipity
 
 export interface Item {
     id: string

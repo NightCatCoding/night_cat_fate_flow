@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
- * 待抽名单组件
+ * 候选池组件
  *
  * 心理学设计原则：
- * 1. 预期效应 - 展示所有候选人，产生"谁会中奖"的悬念
- * 2. 参与感 - 名字醒目显示，增加观众投入度
+ * 1. 预期效应 - 展示所有候选项，产生"谁会被选中"的悬念
+ * 2. 参与感 - 选项醒目显示，增加观众投入度
  * 3. 公平性 - 透明展示增加可信度
- * 4. 紧张感 - 抽奖时的视觉效果增强刺激
+ * 4. 紧张感 - 抽选时的视觉效果增强刺激
  */
 import {computed, ref} from 'vue'
 import {ChevronDown, ChevronUp, Sparkles, Users} from 'lucide-vue-next'
@@ -91,10 +91,10 @@ const themeStyles: Record<ThemeColor, {
 
 const theme = computed(() => themeStyles[props.themeColor])
 
-// 待抽选的项目（未中奖）
+// 待抽选的项目（未选中）
 const availableItems = computed(() => props.items.filter(i => !i.hasWon))
 
-// 已中奖的项目
+// 已选中的项目
 const wonItems = computed(() => props.items.filter(i => i.hasWon))
 
 // 手机版：默认显示的数量
@@ -147,8 +147,8 @@ const toggleExpand = () => {
           <Users :class="['w-5 h-5', theme.text]"/>
         </div>
         <div>
-          <h3 :class="['font-semibold text-base', theme.text]">待抽名单</h3>
-          <p class="text-xs text-txt-muted">等待命运裁决</p>
+          <h3 :class="['font-semibold text-base', theme.text]">候选池</h3>
+          <p class="text-xs text-txt-muted">等待揭晓</p>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ const toggleExpand = () => {
         isSpinning ? 'animate-pulse' : ''
       ]">
         {{ availableItems.length }}
-        <span class="text-xs font-normal text-txt-muted ml-1">人</span>
+        <span class="text-xs font-normal text-txt-muted ml-1">项</span>
       </div>
     </div>
 
@@ -171,7 +171,7 @@ const toggleExpand = () => {
           class="text-center py-8 text-txt-muted"
       >
         <Sparkles class="w-10 h-10 mx-auto mb-3 opacity-30"/>
-        <p class="font-medium">全部抽完啦！</p>
+        <p class="font-medium">全部选完啦！</p>
         <p class="text-xs mt-1 opacity-70">可以重置状态再来一轮</p>
       </div>
 
@@ -208,8 +208,8 @@ const toggleExpand = () => {
         class="px-4 pb-4 pt-2 border-t border-night-muted/30"
     >
       <div class="flex items-center gap-2 mb-2">
-        <span class="text-xs text-txt-muted/60">已中奖</span>
-        <span class="text-xs font-mono text-accent-warm/60">{{ wonItems.length }}人</span>
+        <span class="text-xs text-txt-muted/60">已选中</span>
+        <span class="text-xs font-mono text-accent-warm/60">{{ wonItems.length }}项</span>
       </div>
       <div class="flex flex-wrap gap-1.5">
         <span
@@ -242,12 +242,12 @@ const toggleExpand = () => {
     >
       <div class="flex items-center gap-2">
         <Users :class="['w-4 h-4', theme.text, isSpinning ? 'animate-pulse' : '']"/>
-        <span :class="['font-semibold text-sm', theme.text]">待抽名单</span>
+        <span :class="['font-semibold text-sm', theme.text]">候选池</span>
         <span :class="[
           'px-2 py-0.5 rounded-full text-xs font-mono font-bold',
           theme.bg, theme.text
         ]">
-          {{ availableItems.length }}人
+          {{ availableItems.length }}项
         </span>
       </div>
 
@@ -270,7 +270,7 @@ const toggleExpand = () => {
             v-if="availableItems.length === 0"
             class="text-center py-4 text-txt-muted"
         >
-          <p class="text-sm">全部抽完啦！</p>
+          <p class="text-sm">全部选完啦！</p>
         </div>
 
         <!-- 名单标签流 -->
@@ -314,7 +314,7 @@ const toggleExpand = () => {
             class="mt-3 pt-3 border-t border-night-muted/20"
         >
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-[10px] text-txt-muted/50">已中奖 {{ wonItems.length }}人</span>
+            <span class="text-[10px] text-txt-muted/50">已选中 {{ wonItems.length }}项</span>
           </div>
           <div class="flex flex-wrap gap-1">
             <span

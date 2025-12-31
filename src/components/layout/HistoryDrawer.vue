@@ -71,7 +71,7 @@ watch(() => props.modelValue, (open) => {
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-3 border-b border-glass-border flex-shrink-0">
           <h2 class="text-lg font-display font-bold text-cat-eye">
-            中奖历史
+            抽选记录
           </h2>
           <button
               class="w-10 h-10 rounded-2xl flex items-center justify-center

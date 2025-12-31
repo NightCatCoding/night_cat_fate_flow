@@ -148,7 +148,7 @@ const handleTouchCancel = () => {
       <!-- 主图片 -->
       <img
           :src="currentImage"
-          alt="开启命运"
+          alt="开始抽选"
           :class="[
           sizeClasses,
           'object-contain drop-shadow-2xl transition-all duration-200',

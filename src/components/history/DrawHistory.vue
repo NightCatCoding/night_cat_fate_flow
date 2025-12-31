@@ -92,7 +92,7 @@ const confirmClearHistory = () => {
 
   uiStore.openConfirm({
     title: '清空历史',
-    message: '确定要清空所有抽奖历史记录吗？此操作无法撤销。',
+    message: '确定要清空所有抽选记录吗？此操作无法撤销。',
     confirmText: '清空',
     variant: 'danger',
     onConfirm: () => {
@@ -109,7 +109,7 @@ const confirmClearHistory = () => {
     <div class="px-4 md:px-6 py-4 md:py-5 border-b border-glass-border flex items-center justify-between flex-shrink-0">
       <h2 :class="['font-semibold text-sm md:text-base flex items-center gap-2 transition-colors duration-300', themeStyle.text]">
         <Trophy class="w-4 h-4"/>
-        中奖历史
+        抽选记录
         <span v-if="gameStore.history.length > 0" class="text-xs text-txt-muted font-normal">
           ({{ gameStore.history.length }})
         </span>
@@ -142,8 +142,8 @@ const confirmClearHistory = () => {
           class="text-center py-12 md:py-16 text-txt-muted"
       >
         <History class="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 opacity-30"/>
-        <p class="font-medium text-sm md:text-base">暂无抽奖记录</p>
-        <p class="text-xs md:text-sm mt-1 opacity-70">开始抽奖后记录显示在这里</p>
+        <p class="font-medium text-sm md:text-base">暂无抽选记录</p>
+        <p class="text-xs md:text-sm mt-1 opacity-70">开始抽选后记录显示在这里</p>
       </div>
 
       <TransitionGroup

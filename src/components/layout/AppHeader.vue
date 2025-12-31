@@ -70,7 +70,7 @@ const handleImportConfig = async (event: Event) => {
             Night Cat
           </h1>
           <p class="text-[10px] text-txt-muted uppercase tracking-[0.15em] font-medium">
-            Fate Flow
+            Serendipity
           </p>
         </div>
       </div>

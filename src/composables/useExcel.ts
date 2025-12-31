@@ -109,7 +109,7 @@ export function useExcel() {
 
         const worksheet = XLSX.utils.json_to_sheet(data)
         const workbook = XLSX.utils.book_new()
-        XLSX.utils.book_append_sheet(workbook, worksheet, '抽奖名单')
+        XLSX.utils.book_append_sheet(workbook, worksheet, '抽选清单')
 
         // Auto-fit column widths
         const colWidths = [
@@ -121,8 +121,8 @@ export function useExcel() {
         worksheet['!cols'] = colWidths
 
         const filename = categoryId
-            ? `${categories[0].name}_名单.xlsx`
-            : 'NightCat_抽奖名单.xlsx'
+            ? `${categories[0].name}_清单.xlsx`
+            : 'NightCat_抽选清单.xlsx'
 
         XLSX.writeFile(workbook, filename)
         uiStore.addToast('导出成功', 'success')

@@ -36,7 +36,7 @@ const glowClasses = computed(() => ({
 }[props.glowIntensity]))
 
 const captions = [
-  '...命运由我裁决',
+  '...万物皆可抽',
   '无聊的人类游戏',
   '让我看看谁是天选之人',
   '*不屑地看着轮盘*',

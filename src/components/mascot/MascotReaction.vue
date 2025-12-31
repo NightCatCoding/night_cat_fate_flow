@@ -39,7 +39,7 @@ const SPEECHES: Record<MascotState, string[]> = {
   ],
   spinning: [
     '转啊转...',
-    '命运在旋转',
+    '缘分在旋转',
     '有点晕...',
     '谁会中奖呢',
     '*看着轮盘*',

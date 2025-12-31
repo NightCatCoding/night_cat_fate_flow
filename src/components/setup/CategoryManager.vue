@@ -94,14 +94,14 @@ const openCreateModal = () => {
 
 const createCategory = () => {
   if (!newCategoryName.value.trim()) {
-    uiStore.addToast('请输入分组名称', 'warning')
+    uiStore.addToast('请输入清单名称', 'warning')
     return
   }
 
   const category = gameStore.createCategory(newCategoryName.value.trim(), newCategoryColor.value)
   gameStore.setCurrentCategory(category.id)
   showCreateModal.value = false
-  uiStore.addToast('分组创建成功', 'success')
+  uiStore.addToast('清单创建成功', 'success')
 }
 
 const openEditModal = (category: Category) => {
@@ -123,31 +123,31 @@ const updateCategory = () => {
     applyThemeColor(newCategoryColor.value)
   }
   showEditModal.value = false
-  uiStore.addToast('分组更新成功', 'success')
+  uiStore.addToast('清单更新成功', 'success')
 }
 
 const confirmDeleteCategory = (category: Category) => {
   uiStore.openConfirm({
-    title: '删除分组',
-    message: `确定要删除分组「${category.name}」吗？该分组下的所有成员将被永久删除。`,
+    title: '删除清单',
+    message: `确定要删除清单「${category.name}」吗？该清单下的所有选项将被永久删除。`,
     confirmText: '删除',
     variant: 'danger',
     onConfirm: () => {
       gameStore.deleteCategory(category.id)
-      uiStore.addToast('分组已删除', 'success')
+      uiStore.addToast('清单已删除', 'success')
     },
   })
 }
 
 const confirmResetCategory = (category: Category) => {
   uiStore.openConfirm({
-    title: '重置中奖状态',
-    message: `确定要重置分组「${category.name}」中所有成员的中奖状态吗？`,
+    title: '重置选中状态',
+    message: `确定要重置清单「${category.name}」中所有选项的选中状态吗？`,
     confirmText: '重置',
     variant: 'warning',
     onConfirm: () => {
       gameStore.resetCategoryWinners(category.id)
-      uiStore.addToast('中奖状态已重置', 'success')
+      uiStore.addToast('选中状态已重置', 'success')
     },
   })
 }
@@ -168,7 +168,7 @@ const getCategoryColorStyle = (category: Category) => {
     <div class="flex items-center justify-between">
       <h2 class="text-sm font-semibold text-cat-eye flex items-center gap-2">
         <FolderOpen class="w-4 h-4"/>
-        分组管理
+        清单管理
       </h2>
       <NButton size="xs" @click="openCreateModal">
         <Plus class="w-3.5 h-3.5"/>
@@ -272,21 +272,21 @@ const getCategoryColorStyle = (category: Category) => {
           class="text-center py-8 md:py-12 text-txt-muted"
       >
         <FolderOpen class="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 opacity-30"/>
-        <p class="font-medium text-sm">暂无分组</p>
-        <p class="text-xs mt-1 opacity-70">点击上方按钮创建第一个分组</p>
+        <p class="font-medium text-sm">暂无清单</p>
+        <p class="text-xs mt-1 opacity-70">点击上方按钮创建第一个清单</p>
       </div>
     </div>
 
     <!-- Create Modal -->
-    <NModal v-model="showCreateModal" title="新建分组" size="sm">
+    <NModal v-model="showCreateModal" title="新建清单" size="sm">
       <div class="space-y-6">
         <div>
           <label class="block text-sm font-semibold text-txt-secondary mb-3">
-            分组名称
+            清单名称
           </label>
           <NInput
               v-model="newCategoryName"
-              placeholder="输入分组名称..."
+              placeholder="输入清单名称..."
               size="lg"
               @enter="createCategory"
           />
@@ -309,15 +309,15 @@ const getCategoryColorStyle = (category: Category) => {
     </NModal>
 
     <!-- Edit Modal -->
-    <NModal v-model="showEditModal" title="编辑分组" size="sm">
+    <NModal v-model="showEditModal" title="编辑清单" size="sm">
       <div class="space-y-6">
         <div>
           <label class="block text-sm font-semibold text-txt-secondary mb-3">
-            分组名称
+            清单名称
           </label>
           <NInput
               v-model="newCategoryName"
-              placeholder="输入分组名称..."
+              placeholder="输入清单名称..."
               size="lg"
               @enter="updateCategory"
           />

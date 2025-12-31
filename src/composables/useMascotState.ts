@@ -44,7 +44,7 @@ export function useMascotState(context: 'setup' | 'draw' = 'draw') {
                     ? '創建一個分組開始吧~'
                     : '準備好了嗎？'
             case 'empty':
-                return '添加一些參與者吧！'
+                return '添加一些选项吧！'
             case 'spinning':
                 return '命運正在轉動...'
             case 'winner':

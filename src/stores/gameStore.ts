@@ -239,7 +239,7 @@ export const useGameStore = defineStore('game', () => {
     // Initialize with default category if empty
     const initializeDefaultCategory = () => {
         if (categories.value.length === 0) {
-            const defaultCategory = createCategory('默认分组', 'blue')
+            const defaultCategory = createCategory('默认清单', 'blue')
             currentCategoryId.value = defaultCategory.id
         } else if (!currentCategoryId.value) {
             currentCategoryId.value = categories.value[0].id
