@@ -123,7 +123,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="min-h-screen pt-1 md:pt-20 px-1 sm:px-6 pb-60 md:pb-8 animate-fade-in bg-night-deep">
+  <div class="min-h-screen pt-1 md:pt-20 px-1 sm:px-6 pb-44 md:pb-8 animate-fade-in bg-night-deep">
     <!-- 动态背景光晕 - 根据主题色变化 -->
     <div
         class="fixed inset-0 pointer-events-none transition-all duration-700"
@@ -415,13 +415,13 @@ const goBack = () => {
     <!-- ========================================== -->
     <!-- MOBILE STICKY BOTTOM SPIN BUTTON -->
     <!-- ========================================== -->
-    <div class="fixed bottom-0 left-0 right-0 z-30 lg:hidden">
+    <div class="fixed bottom-16 left-0 right-0 z-30 lg:hidden">
       <!-- 渐变遮罩背景 -->
       <div
-          class="absolute inset-0 bg-gradient-to-t from-night-deep via-night-deep/95 to-transparent pointer-events-none"/>
+          class="absolute inset-0 bg-gradient-to-t from-night-deep via-night-deep/90 to-transparent pointer-events-none"/>
 
       <!-- 按钮容器 -->
-      <div class="relative flex justify-center pb-6 pt-4">
+      <div class="relative flex justify-center py-3">
         <NFateButton
           size="xl"
           :disabled="availableItems.length === 0"
