@@ -125,7 +125,6 @@ const confirmResetAll = () => {
         </div>
         <div class="flex justify-between mt-2 px-1">
           <span class="text-[10px] md:text-xs text-txt-muted/60">1秒</span>
-          <span class="text-[10px] md:text-xs text-txt-muted/60">5秒</span>
           <span class="text-[10px] md:text-xs text-txt-muted/60">10秒</span>
         </div>
       </div>
@@ -173,7 +172,6 @@ const confirmResetAll = () => {
         </div>
         <div class="flex justify-between mt-2 px-1">
           <span class="text-[10px] md:text-xs text-txt-muted/60">1秒</span>
-          <span class="text-[10px] md:text-xs text-txt-muted/60">5秒</span>
           <span class="text-[10px] md:text-xs text-txt-muted/60">10秒</span>
         </div>
       </div>

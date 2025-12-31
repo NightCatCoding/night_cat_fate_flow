@@ -321,13 +321,13 @@ watch(() => uiStore.drawCount, () => {
 
         <!-- 上方渐变遮罩 -->
         <div
-            class="absolute top-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-b from-night-deep via-night-deep/95 to-transparent"
+            class="absolute top-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-b from-night-deep via-night-deep/65 to-transparent"
             :style="{ height: (VISIBLE_EXTRA * ITEM_HEIGHT) + 'px' }"
         />
 
         <!-- 下方渐变遮罩 -->
         <div
-            class="absolute bottom-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-t from-night-deep via-night-deep/95 to-transparent"
+            class="absolute bottom-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-t from-night-deep via-night-deep/65 to-transparent"
             :style="{ height: (VISIBLE_EXTRA * ITEM_HEIGHT) + 'px' }"
         />
 
@@ -388,24 +388,6 @@ watch(() => uiStore.drawCount, () => {
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- 底部装饰指示灯 -->
-    <div class="flex justify-center mt-4 gap-2">
-      <div
-          v-for="i in 5"
-          :key="i"
-          :class="[
-          'w-2.5 h-2.5 rounded-full transition-all duration-300',
-          isAnimating 
-            ? (i % 2 === 0 ? currentTheme.text.replace('text-', 'bg-') : 'bg-night-muted/50')
-            : (i === 3 ? currentTheme.text.replace('text-', 'bg-') : 'bg-night-muted/30')
-        ]"
-          :style="{
-          animationDelay: isAnimating ? `${i * 100}ms` : '0ms',
-          animation: isAnimating ? 'blink 0.5s ease-in-out infinite alternate' : 'none'
-        }"
-      />
     </div>
   </div>
 </template>
