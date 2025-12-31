@@ -29,7 +29,7 @@ defineExpose({toggleHistoryDrawer, showHistoryDrawer})
 
 <template>
   <div
-      class="min-h-screen bg-night-deep text-txt-primary font-sans antialiased selection:bg-cat-eye/30 overflow-x-hidden">
+      class="min-h-screen bg-night-deep text-txt-primary font-sans antialiased selection:bg-cat-eye/30">
     <!-- App Header - Desktop only -->
     <AppHeader class="hidden md:block"/>
 

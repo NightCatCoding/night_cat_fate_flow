@@ -196,49 +196,6 @@ export const useGameStore = defineStore('game', () => {
         category.updatedAt = Date.now()
     }
 
-    const performDraw = (categoryId: string, count: number): Item[] => {
-        const category = getCategoryById(categoryId)
-        if (!category) return []
-
-        const pool = category.items.filter(item => !item.hasWon)
-        if (pool.length === 0) return []
-
-        const actualCount = Math.min(count, pool.length)
-
-        // Fisher-Yates shuffle
-        const shuffled = [...pool]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-
-        const winners = shuffled.slice(0, actualCount)
-
-        // Mark winners
-        if (settings.value.removeAfterWin) {
-            winners.forEach(winner => {
-                const itemIndex = category.items.findIndex(i => i.id === winner.id)
-                if (itemIndex !== -1) {
-                    category.items[itemIndex].hasWon = true
-                }
-            })
-        }
-
-        // Record to history
-        const result: DrawResult = {
-            id: generateId(),
-            categoryId,
-            categoryName: category.name,
-            winners: [...winners],
-            timestamp: Date.now(),
-            themeColor: category.themeColor,
-        }
-        history.value.unshift(result)
-
-        category.updatedAt = Date.now()
-        return winners
-    }
-
     // Actions - Settings
     const updateSettings = (updates: Partial<GlobalSettings>) => {
         settings.value = {...settings.value, ...updates}
@@ -319,7 +276,6 @@ export const useGameStore = defineStore('game', () => {
         // Actions - Drawing
         preSelectWinners,
         confirmWinners,
-        performDraw,
 
         // Actions - Settings
         updateSettings,
