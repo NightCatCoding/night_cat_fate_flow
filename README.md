@@ -3,7 +3,7 @@
 
 # Night Cat Fate Flow
 
-### 夜猫随机抽选器 | Night Cat Random Selector
+### 夜喵随机抽选器 | Night Cat Random Selector
 
 ✨ 一个优雅、有趣的现代化随机抽选工具，带有可爱的吉祥物和精美的视觉效果 ✨
 
@@ -65,7 +65,7 @@ roll call, and random assignment scenarios.
 
 ### 🐱 互动吉祥物
 
-可爱的夜猫吉祥物根据不同状态（等待、旋转、中奖、空闲）展示不同表情与台词。
+可爱的夜喵吉祥物根据不同状态（等待、旋转、中奖、空闲）展示不同表情与台词。
 
 *Cute night cat mascot displays different expressions and dialogues based on current state.*
 
